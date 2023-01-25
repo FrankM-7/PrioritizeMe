@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const MainContent = ({ todos, toggleTodo, deleteTodo }) => {
     const [items, setItems] = useState([]);
-    const [test, setTest] = useState("not working");
+    const [test, setTest] = useState("not working, redeploy");
     const handleAdd = (text) => {
         setItems([...items, { text, completed: false }]);
     }
@@ -34,8 +34,6 @@ const MainContent = ({ todos, toggleTodo, deleteTodo }) => {
             })
             .catch(err => console.log(err));
     }, []);
-
-
 
 
     return (
