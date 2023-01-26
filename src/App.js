@@ -1,15 +1,16 @@
 import logo from './logo.svg';
-import './App.css';
+// import './App.css';
 import SideNav from './SideNav';
 import MainContent from './MainContent';
 
 function App() {
   return (
     <div className="App">
-      <SideNav />
-      <div className='Content'>
+      Hello World
+      {/* <SideNav /> */}
+      {/* <div className='Content'> */}
         {/* <MainContent /> */}
-      </div>
+      {/* </div> */}
     </div>
   );
 }
