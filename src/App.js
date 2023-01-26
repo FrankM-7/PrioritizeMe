@@ -8,7 +8,7 @@ function App() {
     <div className="App">
       <SideNav />
       <div className='Content'>
-        <MainContent />
+        {/* <MainContent /> */}
       </div>
     </div>
   );
