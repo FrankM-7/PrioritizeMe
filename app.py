@@ -11,7 +11,7 @@ cors = CORS(app)
 # use decorators to link the function to a url
 @app.route('/test')
 def home():
-    return {'message': 'Hello, World!'}
+    return {'message': 'Hello, World! bert smells'}
 
 
 @app.route('/')
