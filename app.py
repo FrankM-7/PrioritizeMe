@@ -8,7 +8,7 @@ app = Flask(__name__ ,static_folder='build',static_url_path='')
 cors = CORS(app)
 
 # Use a service account
-cred = credentials.Certificate('credentials.json')
+cred = credentials.Certificate('google-credentials.json')
 default_app = initialize_app(cred)
 db = firestore.client()
 todo_ref = db.collection('users')
