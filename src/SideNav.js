@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import './SideNav.css';
+import './SideNav.css';
 
 const SideNav = () => {
     const [openMenus, setOpenMenus] = useState([]);
