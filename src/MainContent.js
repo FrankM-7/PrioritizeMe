@@ -1,4 +1,4 @@
-// import { List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox, IconButton } from '@mui/material';
+import { List } from '@mui/material';
 // import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from 'react';
 // import axios from 'axios';
@@ -39,19 +39,20 @@ const MainContent = ({ todos, toggleTodo, deleteTodo }) => {
     return (
         <div>
             <h1>{test}</h1>
-            {/* <List>
+            <List>
                 {items.map((item, index) => (
-                    <ListItem key={index} button onClick={() => handleToggle(index)}>
-                        <Checkbox checked={item.completed} />
-                        <ListItemText primary={item.text} style={{ textDecoration: item.completed ? 'line-through' : 'none' }} />
-                        <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(index)}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
+                    <div>{ item.text }</div>
+                    // <ListItem key={index} button onClick={() => handleToggle(index)}>
+                    //     <Checkbox checked={item.completed} />
+                    //     <ListItemText primary={item.text} style={{ textDecoration: item.completed ? 'line-through' : 'none' }} />
+                    //     <ListItemSecondaryAction>
+                    //         <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(index)}>
+                    //             <DeleteIcon />
+                    //         </IconButton>
+                    //     </ListItemSecondaryAction>
+                    // </ListItem>
                 ))}
-            </List> */}
+            </List>
 
             <form onSubmit={(event) => {
                 event.preventDefault();
