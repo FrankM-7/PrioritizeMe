@@ -1,7 +1,7 @@
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 
 
 
@@ -26,14 +26,14 @@ const MainContent = ({ todos, toggleTodo, deleteTodo }) => {
     // when the component mounts, fetch the /test
     // route from the backend and set the items
     // state to the response
-    // useEffect(() => {
-    //     axios.get('/test')
-    //         .then(res => { 
-    //             console.log(res.data);
-    //             setTest(res.data.message);
-    //         })
-    //         .catch(err => console.log(err));
-    // }, []);
+    useEffect(() => {
+        axios.get('/test')
+            .then(res => { 
+                console.log(res.data);
+                setTest(res.data.message);
+            })
+            .catch(err => console.log(err));
+    }, []);
 
 
     return (
