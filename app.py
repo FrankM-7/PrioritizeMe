@@ -18,7 +18,7 @@ todo_ref = db.collection('users')
 # use decorators to link the function to a url
 @app.route('/test')
 def home():
-    return {'message': 'Hello, World! bert smells aaa'}
+    return {'message': 'Hello, World! bert smells'}
 
 @app.route('/list', methods=['GET'])
 def read():
