@@ -1,6 +1,16 @@
 // import React, { useState } from 'react';
 // import './SideNav.css';
 
+const SideNav = () => {
+    return (
+        <div>
+            <h1>SideNav</h1>
+        </div>
+    );
+}
+
+export default SideNav;
+
 // const SideNav = () => {
 //     const [openMenus, setOpenMenus] = useState([]);
 //     const [menus, setMenus] = useState([
