@@ -1,18 +1,16 @@
-// import logo from './logo.svg';
-import './App.css';
-import SideNav from './SideNav';
-import MainContent from './MainContent';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Register from "./Register";
+import MainContent from "./MainContent";
+import Login from "./Login";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      Hello World
-      <SideNav />
-      <div className='Content'>
-        <MainContent />
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<MainContent />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
-
-export default App;

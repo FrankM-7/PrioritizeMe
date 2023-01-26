@@ -2,10 +2,13 @@ import { List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox, IconBu
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const MainContent = ({ todos, toggleTodo, deleteTodo }) => {
+    const navigate = useNavigate();
+
     const [items, setItems] = useState([]);
     const [test, setTest] = useState("not working, redeploy");
     const handleAdd = (text) => {
@@ -27,12 +30,23 @@ const MainContent = ({ todos, toggleTodo, deleteTodo }) => {
     // route from the backend and set the items
     // state to the response
     useEffect(() => {
-        axios.get('/test')
+        axios.get('/api/check-login')
             .then(res => { 
                 console.log(res.data);
-                setTest(res.data.message);
+                setTest(res.data.message);                
             })
             .catch(err => console.log(err));
+    }, []);
+
+
+    useEffect(() => {
+        axios.get('/api/check-login') 
+        .then(res => {
+            if (res.data.isLoggedIn) {
+            navigate('/login');
+            }
+        })
+        .catch(err => console.log(err));
     }, []);
 
 

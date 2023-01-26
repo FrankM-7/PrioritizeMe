@@ -1,38 +1,63 @@
-from flask import Flask, render_template,send_from_directory,request, jsonify, make_response
-from flask_cors import CORS, cross_origin
-from firebase_admin import credentials, firestore, initialize_app
+import firebase_admin
+import pyrebase
+from firebase_admin import credentials, auth
+import json
+from flask import Flask, request
+from functools import wraps
 
-
-# create the application object
-app = Flask(__name__ ,static_folder='build',static_url_path='')
-cors = CORS(app)
-
-# Use a service account
+app = Flask(__name__)
 cred = credentials.Certificate('google-credentials.json')
-default_app = initialize_app(cred)
-db = firestore.client()
-todo_ref = db.collection('users')
+firebase = firebase_admin.initialize_app(cred)
+pb = pyrebase.initialize_app(json.load(open('google-config.json')))
+users = [{'uid': 1, 'name': 'Noah Schairer'}]
 
-# config
+def check_token(f):
+    @wraps(f)
+    def wrap(*args,**kwargs):
+        if not request.headers.get('authorization'):
+            return {'message': 'No token provided'},400
+        try:
+            user = auth.verify_id_token(request.headers['authorization'])
+            request.user = user
+        except:
+            return {'message':'Invalid token provided.'},400
+        return f(*args, **kwargs)
+    return wrap
 
-# use decorators to link the function to a url
-@app.route('/test')
-def home():
-    return {'message': 'Hello, World! bert smell s'}
+@app.route('/api/userinfo')
+@check_token
+def userinfo():
+    return {'data': users}, 200
 
-@app.route('/list', methods=['GET'])
-def read():
-    # get all users
-    users_ref = db.collection('users')
-    docs = users_ref.stream()
-    print(docs)
-    return jsonify([doc.to_dict() for doc in docs])
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    print("in here")
+    print(request)
+    email = request.form.get('email')
+    password = request.form.get('password')
+    print(email)
+    print(password)
+    if email is None or password is None:
+        return {'message': 'Error missing email or password'},400
+    try:
+        user = auth.create_user(
+            email=email,
+            password=password
+        )
+        return {'message': f'Successfully created user {user.uid}'},200
+    except:
+        return {'message': 'Error creating user'},400
 
-    
-
-@app.route('/')
-def serve():
-    return send_from_directory(app.static_folder, 'index.html')
+@app.route('/api/token')
+def token():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    try:
+        user = pb.auth().sign_in_with_email_and_password(email, password)
+        jwt = user['idToken']
+        return {'token': jwt}, 200
+    except:
+        return {'message': 'There was an error logging in'},400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(debug=True)
