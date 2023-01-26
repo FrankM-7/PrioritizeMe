@@ -8,9 +8,9 @@ function App() {
     <div className="App">
       Hello World
       <SideNav />
-      {/* <div className='Content'> */}
-        {/* <MainContent /> */}
-      {/* </div> */}
+      <div className='Content'>
+        <MainContent />
+      </div>
     </div>
   );
 }
