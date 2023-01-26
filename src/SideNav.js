@@ -33,7 +33,7 @@ const SideNav = () => {
 
     return (
         <nav className="sidenav">
-            {/* <ul>
+            <ul>
                 {menus.map((menu, index) => (
                     <li key={index} onClick={() => handleClick(menu.name)}>
                         <a href="#" className={openMenus.includes(menu.name) ? 'active' : ''}>{menu.name}</a>
@@ -64,7 +64,7 @@ const SideNav = () => {
                         )}
                     </li>
                 ))}
-            </ul> */}
+            </ul>
 
             <button onClick={() => {
                 preAddMenu();
