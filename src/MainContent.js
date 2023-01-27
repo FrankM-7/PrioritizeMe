@@ -30,24 +30,37 @@ const MainContent = ({ todos, toggleTodo, deleteTodo }) => {
     // route from the backend and set the items
     // state to the response
     useEffect(() => {
-        axios.get('/api/check-login')
-            .then(res => { 
-                console.log(res.data);
-                setTest(res.data.message);                
-            })
-            .catch(err => console.log(err));
-    }, []);
-
-
-    useEffect(() => {
-        axios.get('/api/check-login') 
+        const headers = {
+            'authorization': localStorage.getItem('token')
+        }
+        axios.get('/api/userinfo', { headers })
         .then(res => {
-            if (res.data.isLoggedIn) {
-            navigate('/login');
-            }
+            console.log(res.data);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+            navigate('/login');
+        });
     }, []);
+
+
+        // axios.get('/api/check-login')
+        //     .then(res => { 
+        //         console.log(res.data);
+        //         setTest(res.data.message);                
+        //     })
+        //     .catch(err => console.log(err));
+
+
+    // useEffect(() => {
+    //     axios.get('/api/check-login') 
+    //     .then(res => {
+    //         if (res.data.isLoggedIn) {
+    //         navigate('/login');
+    //         }
+    //     })
+    //     .catch(err => console.log(err));
+    // }, []);
 
 
     return (

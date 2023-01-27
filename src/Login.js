@@ -7,11 +7,13 @@ function Login() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
-    const login = () => {
-        axios.post('/login', { email, password })
+    const login = (e) => {
+        e.preventDefault();
+        axios.post('/api/token', { email, password })
             .then(res => {
                 console.log(res)
-                if(res.data.status === "success"){
+                if (res.data.token) {
+                    localStorage.setItem('token', res.data.token);
                     navigate('/');
                 }
             })
@@ -32,7 +34,7 @@ function Login() {
     return (
         <div>
         <h1>Login</h1>
-        <form onSubmit={login}>
+        <form>
             <label>
             Email
             <input 
@@ -54,7 +56,7 @@ function Login() {
                 placeholder="Password" 
             />
             </label>
-            <button type="submit" onClick={login}>Login</button>
+            <button onClick={login}>Login</button>
         </form>
         </div>
     );

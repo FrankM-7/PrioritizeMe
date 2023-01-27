@@ -9,7 +9,6 @@ app = Flask(__name__)
 cred = credentials.Certificate('google-credentials.json')
 firebase = firebase_admin.initialize_app(cred)
 pb = pyrebase.initialize_app(json.load(open('google-config.json')))
-users = [{'uid': 1, 'name': 'Noah Schairer'}]
 
 def check_token(f):
     @wraps(f)
@@ -27,14 +26,21 @@ def check_token(f):
 @app.route('/api/userinfo')
 @check_token
 def userinfo():
-    return {'data': users}, 200
+    # Verify the token and get the user data
+    try:
+        token = request.headers['authorization']
+        decoded_token = auth.verify_id_token(token)
+        user_id = decoded_token['uid']
+        user_data = auth.get_user(user_id)
+    except auth.AuthError as e:
+        print(e)
+    return {'data': user_data.email}, 200
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
-    print("in here")
-    print(request)
-    email = request.form.get('email')
-    password = request.form.get('password')
+    # get the email and password from the request
+    email = request.get_json()['email']
+    password = request.get_json()['password']
     print(email)
     print(password)
     if email is None or password is None:
@@ -48,10 +54,10 @@ def signup():
     except:
         return {'message': 'Error creating user'},400
 
-@app.route('/api/token')
+@app.route('/api/token', methods=['POST'])
 def token():
-    email = request.form.get('email')
-    password = request.form.get('password')
+    email = request.get_json()['email']
+    password = request.get_json()['password']
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']

@@ -16,11 +16,13 @@ function Register() {
     }
 
     const handleSubmit = (e) => {
+        console.log(email, password);
         e.preventDefault();
         axios.post('/api/signup', { email, password })
             .then(res => {
                 if(res.data.status === "success"){
-                    //navigate('/login');
+                    // navigate('/login');
+                    console.log(res.data);
                 }
             })
             .catch(err => {
