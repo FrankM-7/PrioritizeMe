@@ -5,7 +5,7 @@ import json
 from flask import Flask, request, send_from_directory
 from functools import wraps
 
-app = Flask(__name__)
+app = Flask(__name__ ,static_folder='build',static_url_path='')
 cred = credentials.Certificate('google-credentials.json')
 firebase = firebase_admin.initialize_app(cred)
 pb = pyrebase.initialize_app(json.load(open('google-config.json')))
