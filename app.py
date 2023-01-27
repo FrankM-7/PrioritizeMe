@@ -2,7 +2,7 @@ import firebase_admin
 import pyrebase
 from firebase_admin import credentials, auth
 import json
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from functools import wraps
 
 app = Flask(__name__)
@@ -65,5 +65,9 @@ def token():
     except:
         return {'message': 'There was an error logging in'},400
 
+@app.route('/')
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
