@@ -2,10 +2,10 @@ import firebase_admin
 import pyrebase
 from firebase_admin import credentials, auth
 import json
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, render_template
 from functools import wraps
 
-app = Flask(__name__ ,static_folder='build',static_url_path='')
+app = Flask(__name__ ,static_folder='build',static_url_path='/static')
 cred = credentials.Certificate('google-credentials.json')
 firebase = firebase_admin.initialize_app(cred)
 pb = pyrebase.initialize_app(json.load(open('google-config.json')))
@@ -67,7 +67,11 @@ def token():
 
 @app.route('/')
 def serve():
-    return send_from_directory(app.static_folder, 'index.html')
+    return render_template('index.html')
+
+@app.route('/<path:path>')
+def catch_all(path):
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
