@@ -4,6 +4,7 @@ from firebase_admin import credentials, auth
 import json
 from flask import Flask, request, send_from_directory, render_template
 from functools import wraps
+import os
 
 app = Flask(__name__ ,static_folder='build',static_url_path='/static')
 cred = credentials.Certificate('google-credentials.json')
@@ -72,6 +73,11 @@ def serve():
 @app.route('/<path:path>')
 def catch_all(path):
     return render_template('index.html')
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

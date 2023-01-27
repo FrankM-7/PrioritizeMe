@@ -2,7 +2,6 @@ import { BrowserRouter , Routes, Route } from "react-router-dom";
 import Register from "./Register";
 import MainContent from "./MainContent";
 import Login from "./Login";
-import axios from "axios";
 
 export default function App() {
 
