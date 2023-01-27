@@ -23,4 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 google-credentials.json
+google-config.json
 
