@@ -68,12 +68,11 @@ def token():
 
 @app.route('/')
 def serve():
-    return render_template('index.html')
-
+    return send_from_directory(app.static_folder, 'index.html')
+    
 @app.route('/<path:path>')
 def catch_all(path):
-    return render_template('index.html')
-
+    return send_from_directory(app.static_folder, 'index.html')
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
