@@ -27,6 +27,17 @@ def signup():
     except:
         return {'message': 'Error creating user'},400
 
+@app.route('/api/token', methods=['POST'])
+def token():
+    email = request.get_json()['email']
+    password = request.get_json()['password']
+    try:
+        user = pb.auth().sign_in_with_email_and_password(email, password)
+        jwt = user['idToken']
+        return {'token': jwt}, 200
+    except:
+        return {'message': 'There was an error logging in'},400
+
 # @app.route('/')
 # def serve():
 #     return send_from_directory(app.static_folder, 'index.html')
