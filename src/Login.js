@@ -58,6 +58,7 @@ function Login() {
             </label>
             <button onClick={login}>Login</button>
         </form>
+        <button onClick={() => navigate('/register')}>Don't have an account? Register</button>
         </div>
     );
 }
