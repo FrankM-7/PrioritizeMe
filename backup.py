@@ -1,64 +1,65 @@
-from flask import Flask, render_template,send_from_directory,request, jsonify, make_response
-from flask_cors import CORS, cross_origin
-from firebase_admin import credentials, firestore, initialize_app, auth
-import pyrebase
-import json
-
 import firebase_admin
+import pyrebase
+from firebase_admin import credentials, auth
+import json
+from flask import Flask, request, send_from_directory, render_template
+from functools import wraps
+import os
 
-cred = credentials.Certificate("google-credentials.json")
-firebase_admin.initialize_app(cred)
-
-# create the application object
 app = Flask(__name__ ,static_folder='build',static_url_path='')
-cors = CORS(app)
 
-# Use a service account
 cred = credentials.Certificate('google-credentials.json')
-# default_app = initialize_app(cred)
-db = firestore.client()
-todo_ref = db.collection('users')
+firebase = firebase_admin.initialize_app(cred)
 pb = pyrebase.initialize_app(json.load(open('google-config.json')))
 
+def check_token(f):
+    @wraps(f)
+    def wrap(*args,**kwargs):
+        if not request.headers.get('authorization'):
+            return {'message': 'No token provided'},400
+        try:
+            user = auth.verify_id_token(request.headers['authorization'])
+            request.user = user
+        except:
+            return {'message':'Invalid token provided.'},400
+        return f(*args, **kwargs)
+    return wrap
 
-# register user
-@app.route('/api/register', methods=['POST'])
-def register():
+@app.route('/api/userinfo')
+@check_token
+def userinfo():
+    # Verify the token and get the user data
+    try:
+        token = request.headers['authorization']
+        decoded_token = auth.verify_id_token(token)
+        user_id = decoded_token['uid']
+        user_data = auth.get_user(user_id)
+    except auth.AuthError as e:
+        print(e)
+    return {'data': user_data.email}, 200
 
-    print("hereeeee")
-    data = request.get_json()
-    email = data['email']
-    password = data['password']
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    # get the email and password from the request
+    email = request.get_json()['email']
+    password = request.get_json()['password']
+    print(email)
+    print(password)
+    if email is None or password is None:
+        return {'message': 'Error missing email or password'},400
     try:
         user = auth.create_user(
             email=email,
-            password=password,
+            password=password
         )
-        return jsonify({'message': 'User created successfully'}), 200
+        return {'message': f'Successfully created user {user.uid}'},200
     except:
-        return jsonify({'message': 'User already exists'}), 400
+        return {'message': 'Error creating user'},400
 
-# check if user is logged in
-@app.route('/api/verify-session', methods=['GET'])
-def verify_session():
-    id_token = request.headers.get('Authorization').split(' ')[1]
-    decoded_token = auth.verify_id_token(id_token)
-    uid = decoded_token['uid']
-
-    user_doc = db.collection('users').document(uid).get()
-    if user_doc.exists:
-        return jsonify({'isLoggedIn': True}), 200
-    else:
-        return jsonify({'isLoggedIn': False}), 401
-
-@app.route('/api/check-login', methods=['GET'])
-def check_login():
-    return jsonify({'isLoggedIn': True}), 200
-
-@app.route('/api/login', methods=['POST'])
+@app.route('/api/token', methods=['POST'])
 def token():
-    email = request.form.get('email')
-    password = request.form.get('password')
+    email = request.get_json()['email']
+    password = request.get_json()['password']
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
@@ -66,34 +67,18 @@ def token():
     except:
         return {'message': 'There was an error logging in'},400
 
-@app.route("/login", methods=["POST"])
-def login():
-    email = request.form.get("email")
-    password = request.form.get("password")
-    try:
-        user = auth.sign_in_with_email_and_password(email, password)
-    except:
-        return jsonify({"error": "e.code", "message": "e.message"}), 400
-    # do something with the user object, such as setting a session variable
-    return jsonify({"message": "Login successful"})
-
-
-# use decorators to link the function to a url
-@app.route('/test')
-def home():
-    return {'message': 'Hello, World! bert smell s'}
-
-@app.route('/list', methods=['GET'])
-def read():
-    # get all users
-    users_ref = db.collection('users')
-    docs = users_ref.stream()
-    print(docs)
-    return jsonify([doc.to_dict() for doc in docs])
-
 @app.route('/')
 def serve():
     return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def catch_all(path):
+    return send_from_directory(app.static_folder, 'index.html')
+    
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

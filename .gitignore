@@ -24,3 +24,4 @@ yarn-error.log*
 
 google-credentials.json
 
+/env
