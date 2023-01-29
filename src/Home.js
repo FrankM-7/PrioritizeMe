@@ -16,7 +16,11 @@ const Home = () => {
             // set user data in context
             axios.get('/api/validate', { headers: { Authorization: `${token}` } 
             }) .then(res => {
-                console.log("it is valid");
+                if (res.data.status === 'error') {
+                    history('/login');
+                } else {
+                    console.log(res.data);
+                }
             }) .catch(err => {
                 console.log(err);
                 history('/login');

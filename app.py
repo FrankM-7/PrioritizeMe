@@ -76,9 +76,9 @@ def user():
 def check_token_validity():
     try:
         decoded_token = auth.verify_id_token(request.headers.get('Authorization'))
-        return True
+        return {'message': 'Token is valid', 'status': 'success'}
     except:
-        return False
+        return {'message': 'Token is invalid', 'status': 'error'}
 
 
 # @app.route('/')
