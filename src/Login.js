@@ -11,9 +11,7 @@ function Login() {
         e.preventDefault();
         axios.post('/api/token', { email, password })
             .then(res => {
-                console.log(res)
                 if (res.data.token) {
-                    console.log(res.data.token)
                     localStorage.setItem('token', res.data.token);
                     navigate('/');
                 }

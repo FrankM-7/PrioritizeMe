@@ -42,7 +42,8 @@ def signup():
             'email': email
         })
         
-        return {'message': f'Successfully created user {user.uid}'},200
+        return {'message': f'Successfully created user {user.uid}',
+                'status': "success" },200
     except:
         return {'message': 'Error creating user'},400
 
@@ -64,7 +65,6 @@ def user():
     token = request.headers.get('Authorization')
     try:
         decoded_token = auth.verify_id_token(token)
-        print(decoded_token)
         uid = decoded_token['uid']
         user_ref = db.collection('users').document(uid).get()
         return {'user': user_ref.to_dict()}, 200
