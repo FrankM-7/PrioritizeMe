@@ -13,6 +13,7 @@ function Login() {
             .then(res => {
                 console.log(res)
                 if (res.data.token) {
+                    console.log(res.data.token)
                     localStorage.setItem('token', res.data.token);
                     navigate('/');
                 }
