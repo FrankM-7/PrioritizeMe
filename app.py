@@ -71,6 +71,16 @@ def user():
     except:
         return {'message': 'There was an error getting the user'},400
 
+# validate token
+@app.route('/api/validate', methods=['GET'])
+def check_token_validity():
+    try:
+        decoded_token = auth.verify_id_token(request.headers.get('Authorization'))
+        return True
+    except:
+        return False
+
+
 # @app.route('/')
 # def serve():
 #     return send_from_directory(app.static_folder, 'index.html')
