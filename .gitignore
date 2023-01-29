@@ -25,3 +25,5 @@ yarn-error.log*
 google-credentials.json
 
 /env
+
+__pycache__
