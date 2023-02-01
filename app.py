@@ -178,6 +178,29 @@ def add_task():
         return {'status': 'success'}
     except:
         return {'message': 'Error adding to submenu data', 'status': 'error'}
+    
+# delete task from submenu
+@app.route('/api/menu/submenu/data/delete', methods=['DELETE'])
+def delete_task():
+    try:
+        # get params 
+        print("yo")
+        print('menuId: ' + request.get_json()['menuId'])
+        print('submenuId: ' + request.get_json()['submenuId'])
+        uid = getUserUID(request.headers.get('Authorization'))
+        # get menu id from menu name matching firbase
+        menu_id = db.collection("users").document(uid).collection("menus").where('menu', '==', request.get_json()['menuId']).get()[0].id
+        submenu_id = db.collection("users").document(uid).collection("menus").document(menu_id).collection("submenus").where('submenu', '==', request.get_json()['submenuId']).get()[0].id
+        
+        db.collection('users').document(uid).collection('menus').document(menu_id).collection('submenus').document(submenu_id).update({
+            'data': firestore.ArrayRemove([request.get_json()['text']])
+        })
+
+
+
+        return {'status': 'success'}
+    except:
+        return {'message': 'Error deleting from submenu data', 'status': 'error'}
 
 # @app.route('/')
 # def serve():

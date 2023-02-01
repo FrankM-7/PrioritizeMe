@@ -7,9 +7,6 @@ import DeleteIcon from '@mui/icons-material/Delete'
 
 
 const MainSection = ({ section, params }) => {
-    const { menuId, submenuId } = useParams();
-    const [tasks, setTasks] = useState([]);
-
     const [input, setInput] = useState('');
     const [items, setItems] = useState([]);
     const handleAdd = (text) => {
@@ -25,7 +22,14 @@ const MainSection = ({ section, params }) => {
     }
     const handleDelete = (index) => {
         setItems(items.filter((_, i) => i !== index));
+        axios.delete('/api/menu/submenu/data/delete', { data: { menuId: section, submenuId: params.name, text: items[index].text }, 'headers': { 'Authorization': `${localStorage.getItem('token')}` } }
+        ).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        })
     }
+    
     const handleToggle = (index) => {
         setItems(items.map((item, i) => {
             if (i === index) {
@@ -35,41 +39,27 @@ const MainSection = ({ section, params }) => {
         }));
     }
 
-
-
     useEffect(() => {
         if (section === '') {
-            return;
+          return;
         }
         // send in menuId and submenuId to get the submenu data
         axios.get(`/api/menu/submenu/data`, {
-            params: { menuId: section, submenuId: params.name },
-            headers: { Authorization: `${localStorage.getItem('token')}` }
+          params: { menuId: section, submenuId: params.name },
+          headers: { Authorization: `${localStorage.getItem('token')}` }
         }).then(res => {
-            setItems(res.data.tasks);
+          setItems(res.data.tasks);
         }).catch(err => {
-            console.log('error')
-            console.log(err);
+          console.log('error')
+          console.log(err);
         })
-    }, [section])
+      }, [section, params.name])
 
     return (
         <div>
             <h1>Main Section</h1>
-            <h2>{section}</h2>
-            <h2>{params.name}</h2>
 
             <div>
-                <h1>Submenu Page</h1>
-                <h2>{section}</h2>
-                <h2>{params.name}</h2>
-                <ul>
-                    {tasks.map((task, index) => (
-                        <li key={index}>{task}</li>
-                    ))}
-                </ul>
-
-
                 <List>
                     {items.map((item, index) => (
                         <ListItem key={index} button onClick={() => handleToggle(index)}>
@@ -82,7 +72,7 @@ const MainSection = ({ section, params }) => {
                             </ListItemSecondaryAction>
                         </ListItem>
                     ))}
-                </List>
+                </List>                
 
                 <form onSubmit={e => {
                     e.preventDefault();
